@@ -23,6 +23,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ asset('assets/libs/toastr/toastr.min.js') }}"></script>
     <script src="{{ asset('assets/libs/bootstrap-select/bootstrap-select.min.js') }}"></script>
+    <script src="https://kit.fontawesome.com/7494d29361.js" crossorigin="anonymous"></script>
 
     <!-- Fonts -->
     <link rel="stylesheet"
@@ -51,6 +52,8 @@
                                 <li><a href="{{ route('subscribers.list') }}"
                                         class="nav-link {{ request()->is('subscribers') ? 'active' : '' }}">Subscribers</a></li>
                                 <li><a href="{{ route('settings.index') }}" class="nav-link {{ request()->is('settings') ? 'active' : '' }}">Settings</a>
+                                </li>
+                                <li><a href="{{ route('runtime-logs.index') }}" class="nav-link {{ request()->is('logs') ? 'active' : '' }}">Runtime Logs</a>
                                 </li>
                             </ul>
                         </nav>

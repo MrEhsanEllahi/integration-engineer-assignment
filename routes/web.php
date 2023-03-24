@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\MainController;
+use App\Http\Controllers\RuntimeLogsController;
 use App\Http\Controllers\SettingsController;
 use Illuminate\Support\Facades\Route;
 
@@ -17,7 +18,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::group([], function () {
     Route::get('/', [MainController::class, 'index'])->name('home');
-    Route::get('/404', [MainController::class, 'notFound'])->name('404');
+    Route::get('/logs', [RuntimeLogsController::class, 'index'])->name('logs');
 
     Route::prefix('subscribers')->as('subscribers.')->group(function () {
         Route::get('/', [MainController::class, 'showList'])->name('list');
@@ -26,6 +27,11 @@ Route::group([], function () {
     Route::prefix('settings')->as('settings.')->group(function () {
         Route::get('/', [SettingsController::class, 'index'])->name('index');
         Route::post('/validate/api-key', [SettingsController::class, 'validateApiKey'])->name('validate.api-key');
+    });
+
+    Route::prefix('runtime-logs')->as('runtime-logs.')->group(function () {
+        Route::get('/', [RuntimeLogsController::class, 'index'])->name('index');
+        Route::get('/{runtimeLogId}', [RuntimeLogsController::class, 'show'])->name('show');
     });
 
 });

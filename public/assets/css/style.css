@@ -42,6 +42,23 @@ body {
     border-bottom: 1px solid #fff;
 }
 
+.badge {
+    color: #fff !important;
+    padding: 8px;
+}
+
+.badge-log-ERROR {
+    background-color: #ff1900 !important;
+}
+
+.badge-log-DEBUG {
+    background-color: #ea541dbc;
+}
+
+.badge-log-INFO {
+    background-color: #425fff;
+}
+
 .main-footer {
     margin-top: auto;
     padding: 20px 10px;

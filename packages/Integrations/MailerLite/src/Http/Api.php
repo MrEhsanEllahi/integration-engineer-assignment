@@ -13,8 +13,7 @@ class Api
 
     function __construct($apiKey)
     {
-        $this->mailerLiteApiEndpoint = config('mailerLite.api_endpoint');
-
+        $this->mailerLiteApiEndpoint = config('mailerlite.api_endpoint');
         $this->apiKey = $apiKey;
     }
 

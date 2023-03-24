@@ -14,8 +14,8 @@ class MailerLiteServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->publishes([
-            __DIR__ . '/config/mailerLite.php' => config_path('mailerLite.php')
-        ], 'mailerLite');
+            __DIR__ . '/config/mailerlite.php' => config_path('mailerlite.php')
+        ], 'mailerlite');
     }
 
     /**
@@ -25,7 +25,7 @@ class MailerLiteServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind(config('mailerLite.name'), function () {
+        $this->app->bind(config('mailerlite.name'), function () {
             return new MailerLite();
         });
     }

@@ -1,5 +1,7 @@
 <?php
 
+use App\Logging\DBCustomLogger;
+use App\Logging\DBLoggingHandler;
 use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogUdpHandler;
@@ -17,7 +19,7 @@ return [
     |
     */
 
-    'default' => env('LOG_CHANNEL', 'stack'),
+    'default' => env('LOG_CHANNEL', 'custom'),
 
     /*
     |--------------------------------------------------------------------------
@@ -52,6 +54,13 @@ return [
             'driver' => 'stack',
             'channels' => ['single'],
             'ignore_exceptions' => false,
+        ],
+
+        'custom' => [
+            'driver' => 'custom',
+            'handler' => DBLoggingHandler::class,
+            'via' => DBCustomLogger::class,
+            'level' => 'debug'
         ],
 
         'single' => [
