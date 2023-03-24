@@ -1,0 +1,50 @@
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.site-navbar {
+    margin-bottom: 0px;
+    z-index: 1999;
+    position: relative;
+    top: 0;
+    width: 100%;
+    background: #00a154;
+}
+
+.site-navbar .site-logo {
+    margin: 0;
+    padding: 20px 0;
+    font-size: 1rem;
+}
+
+.site-navbar .site-logo a {
+    text-transform: uppercase;
+    color: #fff;
+}
+
+.site-navbar .site-navigation .site-menu {
+    margin: 0;
+    padding: 0;
+    margin-bottom: 0;
+}
+
+.site-navbar .site-navigation .site-menu > li {
+    display: inline-block;
+}
+
+.site-navbar .site-navigation .site-menu .nav-link {
+    color: #fff;
+}
+
+.site-navbar .site-navigation .site-menu.active .nav-link {
+    border-bottom: 1px solid #fff;
+}
+
+.main-footer {
+    margin-top: auto;
+    padding: 20px 10px;
+    background-color: #222222;
+    color: #fff;
+}

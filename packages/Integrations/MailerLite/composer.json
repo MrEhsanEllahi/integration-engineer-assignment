@@ -1,0 +1,28 @@
+{
+    "name": "mailerLite-integration/subsciber-manager",
+    "description": "Middleware for MailerLite Integration",
+    "authors": [
+        {
+            "name": "Ahsan Ellahi",
+            "email": "ehsanellahi61.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.4.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Integrations\\MailerLite\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Integrations\\MailerLite\\ShopifyServiceProvider"
+            ],
+            "aliases": {
+                "MailerLite": "Integrations\\MailerLite\\Facade"
+            }
+        }
+    }
+}
