@@ -10,7 +10,8 @@ class RuntimeLog extends Model
     public const LOG_REFERENCES = [
         'MAILER_LITE' => [
             'API' => 'mailerLite::api-instance',
-            'SYNC' => 'mailerLite::sync-key'
+            'SYNC' => 'mailerLite::sync-key',
+            'SUBSCRIBER' => 'mailerLite::subscriber'
         ]
     ];
 

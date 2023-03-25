@@ -3,6 +3,7 @@
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\RuntimeLogsController;
 use App\Http\Controllers\IntegrationsController;
+use App\Http\Controllers\SubscribersController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,7 +22,8 @@ Route::group([], function () {
     Route::get('/logs', [RuntimeLogsController::class, 'index'])->name('logs');
 
     Route::prefix('subscribers')->as('subscribers.')->group(function () {
-        Route::get('/', [MainController::class, 'showList'])->name('list');
+        Route::get('/', [SubscribersController::class, 'list'])->name('list');
+        Route::post('/', [SubscribersController::class, 'store'])->name('store');
     });
 
     Route::prefix('integrations')->as('integrations.')->group(function () {

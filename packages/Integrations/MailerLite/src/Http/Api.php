@@ -17,6 +17,16 @@ class Api
         $this->apiToken = $apiToken;
     }
 
+    function validateApiToken()
+    {
+        return $this->makeCall('subscribers?limit=0', 'GET');
+    }
+
+    function addSubscriber($subsciber)
+    {
+        return $this->makeCall('subscribers', 'POST', $subsciber);
+    }
+
     function makeCall($endpoint, $method, $data = null, $params = [])
     {
         $headers = [];
@@ -72,10 +82,5 @@ class Api
         }
 
         return $response;
-    }
-
-    function validateApiToken()
-    {
-        return $this->makeCall('subscribers?limit=0', 'GET');
     }
 }

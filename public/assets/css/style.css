@@ -59,6 +59,10 @@ body {
     background-color: #425fff;
 }
 
+#toast-container>div {
+    opacity: 1 !important;
+}
+
 .main-footer {
     margin-top: auto;
     padding: 20px 10px;

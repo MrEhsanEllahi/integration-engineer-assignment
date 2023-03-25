@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\GeneralHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Integration;
 use Exception;
@@ -12,9 +13,8 @@ use Integrations\MailerLite\MailerLiteManager;
 class IntegrationsController extends Controller
 {
     public function index()
-    {
-        $integration = Integration::where('platform', Integration::PLATFORM['MAILER_LITE'])->first();
-        $apiToken = $integration ? $integration->api_token : null;
+    {        
+        $apiToken = GeneralHelper::getApiToken();
         return view('integrations', compact('apiToken'));
     }
 
@@ -24,8 +24,8 @@ class IntegrationsController extends Controller
         ]);
 
         if ($validator->fails()) {
-            $notification = ['message' => $validator->errors()->first(), 'type' => 'error'];
-            return redirect()->back()->with(['notifications' => [$notification]])->withInput();
+            $notification = ['message' => $validator->errors()->first(), 'alert-type' => 'error'];
+            return redirect()->back()->with($notification)->withInput();
         }
 
         try {
@@ -38,11 +38,11 @@ class IntegrationsController extends Controller
                 ]);
             }
 
-            $notification = ['message' => 'Account Connected successfully!', 'type' => 'success'];
-            return redirect()->route('integrations.index')->with(['notifications' => [$notification]]);
+            $notification = ['message' => 'Account Connected successfully!', 'alert-type' => 'success'];
+            return redirect()->route('integrations.index')->with($notification);
         } catch (Exception $e) {
-            $notification = ['message' => $e->getMessage(), 'type' => 'error'];
-            return redirect()->back()->with(['notifications' => [$notification]])->withInput();
+            $notification = ['message' => $e->getMessage(), 'alert-type' => 'error'];
+            return redirect()->back()->with($notification)->withInput();
         }
     }
 }

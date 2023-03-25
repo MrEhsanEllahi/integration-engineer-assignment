@@ -23,8 +23,8 @@ class RuntimeLogsController extends Controller
         $runtimeLog = RuntimeLog::find($runtimeLogId);
 
         if (!$runtimeLog) {
-            $notification = ['message' => 'Log not found', 'type' => 'error'];
-            return redirect()->back()->with(['notifications' => [$notification]]);
+            $notification = ['message' => 'Log not found', 'alert-type' => 'error'];
+            return redirect()->back()->with($notification);
         }
 
         return view('runtime-logs.show', compact('runtimeLog'));
