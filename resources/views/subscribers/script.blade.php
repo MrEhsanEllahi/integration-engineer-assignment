@@ -29,7 +29,7 @@
                     data: null,
                     searchable: false,
                     render: function (data, type, full, row) {
-                        return `<a href="{{ route('subscribers.edit', ['ID_PLACEHOLDER']) }}"><i class="fas fa-eye mr-2 text-primary"></i></a>`
+                        return `<a href="{{ route('subscribers.edit', ['ID_PLACEHOLDER']) }}"><i class="fas fa-edit mr-2 text-primary"></i></a>`
                             .replace('ID_PLACEHOLDER', full.id);
                     }
                 },
