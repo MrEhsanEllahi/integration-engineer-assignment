@@ -2,6 +2,7 @@
 
 namespace Integrations\MailerLite;
 
+use App\Formatters\MailerLite\SubscribersFormatter;
 use App\Models\RuntimeLog;
 use App\Models\Subscriber;
 use Exception;
@@ -40,6 +41,33 @@ class MailerLiteManager
             return true;
         } catch (Exception $error) {
             Log::debug("Something went wrong when adding a subscriber", [
+                'reference' => RuntimeLog::LOG_REFERENCES['MAILER_LITE']['SUBSCRIBER'],
+                'payload' => json_encode($response),
+                'trace' => json_encode($error->getMessage())
+            ]);
+            throw $error;
+        }
+    }
+
+    public static function getSubscribers($apiToken, $cursor = null, $limit) {
+        try {
+            $params = [
+                'cursor' => $cursor,
+                'limit' => $limit
+            ];
+            
+            $response = self::loadApi($apiToken)->getSubscribers($params);
+            if($response['success'] == false) {
+                throw new Exception($response['message']);
+            }
+            Log::debug("Get Subscribers call successful", [
+                'reference' => RuntimeLog::LOG_REFERENCES['MAILER_LITE']['SUBSCRIBER'],
+                'trace' => json_encode($response)
+            ]);
+            $formattedSubscribers = SubscribersFormatter::formatForDataTable($response['data']);
+            return $formattedSubscribers;
+        } catch (Exception $error) {
+            Log::debug("Something went wrong when getting subscribers list", [
                 'reference' => RuntimeLog::LOG_REFERENCES['MAILER_LITE']['SUBSCRIBER'],
                 'payload' => json_encode($response),
                 'trace' => json_encode($error->getMessage())

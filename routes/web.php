@@ -22,8 +22,10 @@ Route::group([], function () {
     Route::get('/logs', [RuntimeLogsController::class, 'index'])->name('logs');
 
     Route::prefix('subscribers')->as('subscribers.')->group(function () {
-        Route::get('/', [SubscribersController::class, 'list'])->name('list');
+        Route::get('/', [SubscribersController::class, 'index'])->name('index');
+        Route::get('/list', [SubscribersController::class, 'list'])->name('list');
         Route::post('/', [SubscribersController::class, 'store'])->name('store');
+        Route::get('/edit', [SubscribersController::class, 'edit'])->name('edit');
     });
 
     Route::prefix('integrations')->as('integrations.')->group(function () {

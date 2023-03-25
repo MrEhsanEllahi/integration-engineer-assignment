@@ -27,12 +27,21 @@ class Api
         return $this->makeCall('subscribers', 'POST', $subsciber);
     }
 
+    function getSubscribers($params)
+    {
+        return $this->makeCall('subscribers', 'GET', null, $params);
+    }
+
     function makeCall($endpoint, $method, $data = null, $params = [])
     {
         $headers = [];
         $requestData = [];
-
-        $endpoint = $this->mailerLiteApiEndpoint . $endpoint . implode('&', $params);
+        
+        if(!empty($params)) {
+            $endpoint .= '?' . http_build_query($params);
+        }
+        
+        $endpoint = $this->mailerLiteApiEndpoint . $endpoint;
         $headers['Authorization'] = 'Bearer ' . $this->apiToken;
         $headers['Content-Type'] = 'application/json';
         $headers['Accept'] = 'application/json';

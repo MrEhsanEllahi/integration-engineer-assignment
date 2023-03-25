@@ -13,9 +13,34 @@ use Integrations\MailerLite\MailerLiteManager;
 
 class SubscribersController extends Controller
 {
-    public function lsit()
+    public function index()
     {
+        return view('subscribers.list');
+    }
+
+    public function list(Request $request) {
+        $apiToken = GeneralHelper::getApiToken();
+            
+        if(!$apiToken) {
+            $notification = ['message' => 'Account is not connected', 'alert-type' => 'error'];
+            return redirect()->back()->with($notification)->withInput();
+        }
+
+        $cursor = $request->get('cursor', null);
+        $limit = $request->get('limit', 10);
+        $draw = $request->get('draw', 1);
         
+        $mailerLiteManager = new MailerLiteManager;
+        $subscribers = $mailerLiteManager->getSubscribers($apiToken, $cursor, $limit);
+
+        return response()->json([
+            'draw' => intval($draw),
+            'data' => $subscribers['data'],
+            'nextCursor' => $subscribers['next_cursor'],
+            'prevCursor' => $subscribers['prev_cursor'],
+        ]);
+
+        return response()->json($subscribers);
     }
 
     public function store(Request $request) {
@@ -34,7 +59,8 @@ class SubscribersController extends Controller
             $apiToken = GeneralHelper::getApiToken();
             
             if(!$apiToken) {
-                $notification = ['message' => 'Integration not found', 'alert-type' => 'error'];
+                $notification = ['message' => 'Account is not connected', 'alert-type' => 'error'];
+                return redirect()->back()->with($notification)->withInput();
             }
             
             if(Subscriber::where('email', $request->email)->exists()) {

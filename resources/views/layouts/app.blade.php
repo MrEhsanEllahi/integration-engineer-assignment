@@ -53,7 +53,7 @@
                     <div class="col-9  text-right">
                         <nav class="site-navigation text-right ml-auto d-none d-lg-block" role="navigation">
                             <ul class="site-menu main-menu js-clone-nav ml-auto ">
-                                <li><a href="{{ route('subscribers.list') }}"
+                                <li><a href="{{ route('subscribers.index') }}"
                                         class="nav-link {{ request()->is('subscribers') ? 'active' : '' }}">Subscribers</a></li>
                                 <li><a href="{{ route('integrations.index') }}" class="nav-link {{ request()->is('integrations') ? 'active' : '' }}">Integrations</a>
                                 </li>
