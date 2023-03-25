@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\GeneralHelper;
 use App\Http\Controllers\Controller;
-use App\Models\Country;
 use App\Models\Subscriber;
 use Exception;
 use Illuminate\Http\Request;
@@ -19,19 +17,12 @@ class SubscribersController extends Controller
     }
 
     public function list(Request $request) {
-        $apiToken = GeneralHelper::getApiToken();
-            
-        if(!$apiToken) {
-            $notification = ['message' => 'Account is not connected', 'alert-type' => 'error'];
-            return redirect()->back()->with($notification)->withInput();
-        }
-
         $cursor = $request->get('cursor', null);
         $limit = $request->get('limit', 10);
         $draw = $request->get('draw', 1);
         
         $mailerLiteManager = new MailerLiteManager;
-        $subscribers = $mailerLiteManager->getSubscribers($apiToken, $cursor, $limit);
+        $subscribers = $mailerLiteManager->getSubscribers($cursor, $limit);
 
         return response()->json([
             'draw' => intval($draw),
@@ -39,8 +30,6 @@ class SubscribersController extends Controller
             'nextCursor' => $subscribers['next_cursor'],
             'prevCursor' => $subscribers['prev_cursor'],
         ]);
-
-        return response()->json($subscribers);
     }
 
     public function store(Request $request) {
@@ -56,24 +45,49 @@ class SubscribersController extends Controller
         }
 
         try {
-            $apiToken = GeneralHelper::getApiToken();
-            
-            if(!$apiToken) {
-                $notification = ['message' => 'Account is not connected', 'alert-type' => 'error'];
-                return redirect()->back()->with($notification)->withInput();
-            }
-            
             if(Subscriber::where('email', $request->email)->exists()) {
                 $notification = ['message' => 'User already exist as a subscriber', 'alert-type' => 'error'];
                 return redirect()->back()->with($notification)->withInput();
             }
             
             $mailerLiteManager = new MailerLiteManager;
-            $subscriber = ['name' => trim($request->name), 'email' => $request->email, 'country' => $request->country];
-            $mailerLiteManager->addSubscriber($apiToken, $subscriber);
+            $subscriber = array(
+                    'email' => $request->email,
+                    'fields' => array(
+                        'name' => trim($request->name),
+                        'country' => $request->country,
+                    )
+                );
+            $mailerLiteManager->addSubscriber($subscriber);
 
             $notification = ['message' => 'Subscriber added successfully!', 'alert-type' => 'success'];
             return redirect()->route('home')->with($notification);
+        } catch (Exception $e) {
+            $notification = ['message' => $e->getMessage(), 'alert-type' => 'error'];
+            return redirect()->back()->with($notification)->withInput();
+        }
+    }
+
+    public function destroy(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'subscriber_id' => 'required|exists:subscribers,subscriber_id'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => $validator->errors()->first()
+            ]);
+        }
+
+        try {
+            $mailerLiteManager = new MailerLiteManager;
+            $mailerLiteManager->removeSubscriber($request->subscriber_id);
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Subscriber removed successfully'
+            ]);
         } catch (Exception $e) {
             $notification = ['message' => $e->getMessage(), 'alert-type' => 'error'];
             return redirect()->back()->with($notification)->withInput();

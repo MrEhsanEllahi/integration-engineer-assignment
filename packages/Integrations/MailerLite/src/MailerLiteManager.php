@@ -3,6 +3,7 @@
 namespace Integrations\MailerLite;
 
 use App\Formatters\MailerLite\SubscribersFormatter;
+use App\Helpers\GeneralHelper;
 use App\Models\RuntimeLog;
 use App\Models\Subscriber;
 use Exception;
@@ -11,22 +12,30 @@ use Integrations\MailerLite\Http\Api;
 
 class MailerLiteManager
 {
-    public static function loadApi($apiToken)
+    public static function loadApi($apiToken = null)
     {
         try {
+            if(!$apiToken) {
+                $apiToken = GeneralHelper::getApiToken();
+            
+                if(!$apiToken) {
+                    throw new Exception('Store not connected');
+                }
+            }
             $api = new Api($apiToken);
+            return $api;
         } catch (Exception $error) {
             Log::error("Error while creating MailerLite api instance", [
                 'reference' => RuntimeLog::LOG_REFERENCES['MAILER_LITE']['API'],
                 'trace' => json_encode($error->getMessage())
             ]);
+            throw $error;
         }
-        return $api;
     }
 
-    public static function addSubscriber($apiToken, $subscriber) {
+    public static function addSubscriber($subscriber) {
         try {
-            $response = self::loadApi($apiToken)->addSubscriber($subscriber);
+            $response = self::loadApi()->addSubscriber($subscriber);
             if($response['success'] == false) {
                 throw new Exception($response['message']);
             }
@@ -49,25 +58,50 @@ class MailerLiteManager
         }
     }
 
-    public static function getSubscribers($apiToken, $cursor = null, $limit) {
+    public static function getSubscribers($cursor = null, $limit) 
+    {
         try {
             $params = [
                 'cursor' => $cursor,
                 'limit' => $limit
             ];
             
-            $response = self::loadApi($apiToken)->getSubscribers($params);
+            $response = self::loadApi()->getSubscribers($params);
             if($response['success'] == false) {
                 throw new Exception($response['message']);
             }
-            Log::debug("Get Subscribers call successful", [
+            Log::debug("Subscribers fetched successfully", [
                 'reference' => RuntimeLog::LOG_REFERENCES['MAILER_LITE']['SUBSCRIBER'],
+                'payload' => json_encode($params),
                 'trace' => json_encode($response)
             ]);
             $formattedSubscribers = SubscribersFormatter::formatForDataTable($response['data']);
             return $formattedSubscribers;
         } catch (Exception $error) {
             Log::debug("Something went wrong when getting subscribers list", [
+                'reference' => RuntimeLog::LOG_REFERENCES['MAILER_LITE']['SUBSCRIBER'],
+                'payload' => json_encode($response),
+                'trace' => json_encode($error->getMessage())
+            ]);
+            throw $error;
+        }
+    }
+
+    public static function removeSubscriber($subscriberId)
+    {
+        try {
+            $response = self::loadApi()->removeSubscriber($subscriberId);
+            if($response['success'] == false) {
+                throw new Exception($response['message']);
+            }
+            Subscriber::where('subscriber_id', $subscriberId)->delete();
+            Log::debug("Subscriber removed successfully", [
+                'reference' => RuntimeLog::LOG_REFERENCES['MAILER_LITE']['SUBSCRIBER'],
+                'payload' => json_encode($subscriberId),
+                'trace' => json_encode($response)
+            ]);
+        } catch (Exception $error) {
+            Log::debug("Something went wrong when removing subscriber", [
                 'reference' => RuntimeLog::LOG_REFERENCES['MAILER_LITE']['SUBSCRIBER'],
                 'payload' => json_encode($response),
                 'trace' => json_encode($error->getMessage())

@@ -11,6 +11,9 @@
                     <h3 class="card-title m-0">Subscribers</h3>
                 </div>
                 <div class="card-body">
+                    <div id="loader" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999;">
+                        <i class="fas fa-spinner fa-spin fa-3x"></i>
+                    </div>
                     <div class="table-responsive">
                         <table id="subscribers" class="table table-bordered table-striped table-hover w-100">
                             <thead>

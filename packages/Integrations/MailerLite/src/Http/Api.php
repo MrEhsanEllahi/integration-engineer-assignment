@@ -32,6 +32,11 @@ class Api
         return $this->makeCall('subscribers', 'GET', null, $params);
     }
 
+    function removeSubscriber($subsciberId)
+    {
+        return $this->makeCall('subscribers/' . $subsciberId, 'DELETE');
+    }
+
     function makeCall($endpoint, $method, $data = null, $params = [])
     {
         $headers = [];
@@ -65,7 +70,7 @@ class Api
 
             $response = $client->request($method, $endpoint, $options);
 
-            if (in_array($response->getStatusCode(), [200, 201])) {
+            if (in_array($response->getStatusCode(), [200, 201, 204])) {
                 $response = array(
                     'success' => true,
                     'code' => $response->getStatusCode(),
