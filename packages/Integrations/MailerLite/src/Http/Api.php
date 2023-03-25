@@ -9,12 +9,12 @@ class Api
 {
     public $mailerLiteApiEndpoint;
     public $storeUrl;
-    public $apiKey;
+    public $apiToken;
 
-    function __construct($apiKey)
+    function __construct($apiToken)
     {
         $this->mailerLiteApiEndpoint = config('mailerlite.api_endpoint');
-        $this->apiKey = $apiKey;
+        $this->apiToken = $apiToken;
     }
 
     function makeCall($endpoint, $method, $data = null, $params = [])
@@ -23,7 +23,7 @@ class Api
         $requestData = [];
 
         $endpoint = $this->mailerLiteApiEndpoint . $endpoint . implode('&', $params);
-        $headers['Authorization'] = 'Bearer ' . $this->apiKey;
+        $headers['Authorization'] = 'Bearer ' . $this->apiToken;
         $headers['Content-Type'] = 'application/json';
         $headers['Accept'] = 'application/json';
 
@@ -74,7 +74,7 @@ class Api
         return $response;
     }
 
-    function validateApiKey()
+    function validateApiToken()
     {
         return $this->makeCall('subscribers?limit=0', 'GET');
     }

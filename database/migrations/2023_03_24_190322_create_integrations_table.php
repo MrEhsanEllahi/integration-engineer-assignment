@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAppSettingsTable extends Migration
+class CreateIntegrationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateAppSettingsTable extends Migration
      */
     public function up()
     {
-        Schema::create('app_settings', function (Blueprint $table) {
+        Schema::create('integrations', function (Blueprint $table) {
             $table->id();
-            $table->string('key');
-            $table->text('value');
+            $table->integer('platform');
+            $table->text('api_token');
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ class CreateAppSettingsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('mailer_lite_settings');
+        Schema::dropIfExists('integrations');
     }
 }

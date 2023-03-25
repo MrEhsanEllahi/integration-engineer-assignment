@@ -3,25 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\AppSetting;
+use App\Models\Integration;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Integrations\MailerLite\MailerLiteManager;
 
-class SettingsController extends Controller
+class IntegrationsController extends Controller
 {
     public function index()
     {
-        $setting = AppSetting::where('key', 'api_key')->first();
-        $apiKey = $setting ? $setting->value : null;
-        return view('settings', compact('apiKey'));
+        $integration = Integration::where('platform', Integration::PLATFORM['MAILER_LITE'])->first();
+        $apiToken = $integration ? $integration->api_token : null;
+        return view('integrations', compact('apiToken'));
     }
 
-    public function validateApiKey(Request $request) {
+    public function validateIntegration(Request $request) {
         $validator = Validator::make($request->all(), [
-            'api_key' => 'required|string'
+            'api_token' => 'required|string'
         ]);
 
         if ($validator->fails()) {
@@ -31,16 +30,16 @@ class SettingsController extends Controller
 
         try {
             $mailerLiteManager = new MailerLiteManager;
-            $response = $mailerLiteManager->isValidApiKey($request->api_key);
+            $response = $mailerLiteManager->isValidApiToken($request->api_token);
             if($response) {
-                AppSetting::create([
-                    'key' => 'api_key',
-                    'value' => $request->api_key
+                Integration::create([
+                    'platform' => Integration::PLATFORM['MAILER_LITE'],
+                    'api_token' => $request->api_token
                 ]);
             }
 
             $notification = ['message' => 'Account Connected successfully!', 'type' => 'success'];
-            return redirect()->route('admin.integrations.index')->with(['notifications' => [$notification]]);
+            return redirect()->route('integrations.index')->with(['notifications' => [$notification]]);
         } catch (Exception $e) {
             $notification = ['message' => $e->getMessage(), 'type' => 'error'];
             return redirect()->back()->with(['notifications' => [$notification]])->withInput();

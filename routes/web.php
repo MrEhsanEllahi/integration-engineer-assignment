@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\RuntimeLogsController;
-use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\IntegrationsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,9 +24,9 @@ Route::group([], function () {
         Route::get('/', [MainController::class, 'showList'])->name('list');
     });
 
-    Route::prefix('settings')->as('settings.')->group(function () {
-        Route::get('/', [SettingsController::class, 'index'])->name('index');
-        Route::post('/validate/api-key', [SettingsController::class, 'validateApiKey'])->name('validate.api-key');
+    Route::prefix('integrations')->as('integrations.')->group(function () {
+        Route::get('/', [IntegrationsController::class, 'index'])->name('index');
+        Route::post('/validate', [IntegrationsController::class, 'validateIntegration'])->name('validate');
     });
 
     Route::prefix('runtime-logs')->as('runtime-logs.')->group(function () {

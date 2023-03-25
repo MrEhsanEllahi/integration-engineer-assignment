@@ -10,12 +10,12 @@ use Integrations\MailerLite\Http\Api;
 class MailerLiteManager
 {
 
-    public static function loadApi($apiKey)
+    public static function loadApi($apiToken)
     {
         try {
-            $api = new Api($apiKey);
+            $api = new Api($apiToken);
         } catch (Exception $error) {
-            Log::error("Error while creating MailerLite api instance for API-KEY: {$apiKey}", [
+            Log::error("Error while creating MailerLite api instance", [
                 'reference' => RuntimeLog::LOG_REFERENCES['MAILER_LITE']['API'],
                 'trace' => json_encode($error->getMessage())
             ]);
@@ -23,19 +23,20 @@ class MailerLiteManager
         return $api;
     }
 
-    public static function isValidApiKey($apiKey)
+    public static function isValidApiToken($apiToken)
     {
         try {
-            $response = self::loadApi($apiKey)->validateApiKey();
+            $response = self::loadApi($apiToken)->validateApiToken();
             if($response['success'] == false) {
                 throw new Exception($response['message']);
             }
-            Log::debug("MailerLite API KEY is validated successfully: {$apiKey}", [
+            Log::debug("MailerLite API-TOKEN is validated successfully", [
                 'reference' => RuntimeLog::LOG_REFERENCES['MAILER_LITE']['SYNC'],
                 'trace' => json_encode($response)
             ]);
+            return true;
         } catch (Exception $error) {
-            Log::debug("Something went wrong when validating API-KEY: {$apiKey}", [
+            Log::debug("Something went wrong when validating API-TOKEN", [
                 'reference' => RuntimeLog::LOG_REFERENCES['MAILER_LITE']['SYNC'],
                 'payload' => json_encode($response),
                 'trace' => json_encode($error->getMessage())
