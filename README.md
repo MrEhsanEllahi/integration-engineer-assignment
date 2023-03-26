@@ -79,10 +79,6 @@ The project uses the following libraries, which are included via CDN:
 
 The MailerLite integration is done using a custom-made package under the `integrations` directory. Make sure to run `composer dump-autoload` to load the package.
 
-### Database
-
-An SQL file is available under the `database` directory, so there's no need to run migrations.
-
 ### MailerLite Keys
 
 To ensure the working of app 100%, make sure that the key `MAILERLITE_API_ENDPOINT` is set in `.env` file. And tests will work only if `MAILERLITE_API_TOKEN` is also set under `.env` file.
