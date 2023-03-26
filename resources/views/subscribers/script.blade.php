@@ -12,7 +12,10 @@
                 },
                 {
                     data: 'email',
-                    searchable: true
+                    searchable: true,
+                    render: function (data, type, full, row) {
+                        return '<a href="' + "{{ route('subscribers.edit', ['ID_PLACEHOLDER']) }}".replace('ID_PLACEHOLDER', full.id) + '">' + data + '</a>';
+                    }
                 },
                 {
                     data: 'country',
@@ -32,7 +35,7 @@
                     render: function (data, type, full, row) {
                         return `<a href="{{ route('subscribers.edit', ['ID_PLACEHOLDER']) }}"><i class="fas fa-edit mr-2 text-primary"></i></a>
                                 <i class="fas fa-trash-alt text-danger remove-subscriber" data-id="${full.id}" style="cursor:pointer"></i>`
-                                .replace('ID_PLACEHOLDER', full.id);
+                            .replace('ID_PLACEHOLDER', full.id);
                     }
                 },
             ],
