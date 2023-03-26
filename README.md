@@ -47,7 +47,7 @@ php artisan key:generate
 
 ## Step 6: Import SQL File
 
-There is no need to run `php artisan migration` command. Just import the sql file available under `Database` directory.
+There is no need to run `php artisan migration` command. Just import the sql file available under `Database->sql` directory.
 
 ## Step 7: Configure the .env file
 
