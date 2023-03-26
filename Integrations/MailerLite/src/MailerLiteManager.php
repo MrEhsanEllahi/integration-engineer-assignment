@@ -84,7 +84,7 @@ class MailerLiteManager
         }
     }
 
-    public static function getSubscribersList($cursor = null, $limit) 
+    public static function getSubscribersList($cursor = null, $limit = 10) 
     {
         try {
             $params = [
