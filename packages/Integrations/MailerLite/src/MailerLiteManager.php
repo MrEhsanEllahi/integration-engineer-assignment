@@ -35,7 +35,7 @@ class MailerLiteManager
 
     public static function addSubscriber($subscriber) {
         try {
-            $response = self::loadApi()->addSubscriber($subscriber);
+            $response = self::loadApi()->addOrUpdateSubscriber($subscriber);
             if($response['success'] == false) {
                 throw new Exception($response['message']);
             }
@@ -57,8 +57,30 @@ class MailerLiteManager
             throw $error;
         }
     }
+    
+    public static function updateSubscriber($subscriber) {
+        try {
+            $response = self::loadApi()->addOrUpdateSubscriber($subscriber);
+            if($response['success'] == false) {
+                throw new Exception($response['message']);
+            }
+            
+            Log::debug("Subscriber updated successfuly", [
+                'reference' => RuntimeLog::LOG_REFERENCES['MAILER_LITE']['SYNC'],
+                'trace' => json_encode($response)
+            ]);
+            return true;
+        } catch (Exception $error) {
+            Log::debug("Something went wrong when updating a subscriber", [
+                'reference' => RuntimeLog::LOG_REFERENCES['MAILER_LITE']['SUBSCRIBER'],
+                'payload' => json_encode($response),
+                'trace' => json_encode($error->getMessage())
+            ]);
+            throw $error;
+        }
+    }
 
-    public static function getSubscribers($cursor = null, $limit) 
+    public static function getSubscribersList($cursor = null, $limit) 
     {
         try {
             $params = [
@@ -66,17 +88,41 @@ class MailerLiteManager
                 'limit' => $limit
             ];
             
-            $response = self::loadApi()->getSubscribers($params);
+            $response = self::loadApi()->getSubscribersList($params);
             if($response['success'] == false) {
                 throw new Exception($response['message']);
             }
-            Log::debug("Subscribers fetched successfully", [
+            Log::debug("Subscribers list fetched successfully", [
                 'reference' => RuntimeLog::LOG_REFERENCES['MAILER_LITE']['SUBSCRIBER'],
                 'payload' => json_encode($params),
                 'trace' => json_encode($response)
             ]);
-            $formattedSubscribers = SubscribersFormatter::formatForDataTable($response['data']);
+            $formattedSubscribers = SubscribersFormatter::formatSubscribersList($response['data']);
             return $formattedSubscribers;
+        } catch (Exception $error) {
+            Log::debug("Something went wrong when getting subscribers list", [
+                'reference' => RuntimeLog::LOG_REFERENCES['MAILER_LITE']['SUBSCRIBER'],
+                'payload' => json_encode($response),
+                'trace' => json_encode($error->getMessage())
+            ]);
+            throw $error;
+        }
+    }
+
+    public static function getSubscriber($subscriberId) 
+    {
+        try {      
+            $response = self::loadApi()->getSubscriber($subscriberId);
+            if($response['success'] == false) {
+                throw new Exception($response['message']);
+            }
+            Log::debug("Subscriber fetched successfully", [
+                'reference' => RuntimeLog::LOG_REFERENCES['MAILER_LITE']['SUBSCRIBER'],
+                'payload' => json_encode($subscriberId),
+                'trace' => json_encode($response)
+            ]);
+            $formattedSubscriber = SubscribersFormatter::formatSubscriber($response['data']);
+            return $formattedSubscriber;
         } catch (Exception $error) {
             Log::debug("Something went wrong when getting subscribers list", [
                 'reference' => RuntimeLog::LOG_REFERENCES['MAILER_LITE']['SUBSCRIBER'],

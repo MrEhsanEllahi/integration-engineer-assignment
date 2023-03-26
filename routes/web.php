@@ -26,6 +26,7 @@ Route::group([], function () {
         Route::get('/list', [SubscribersController::class, 'list'])->name('list');
         Route::post('/', [SubscribersController::class, 'store'])->name('store');
         Route::get('/edit/{subscriberId}', [SubscribersController::class, 'edit'])->name('edit');
+        Route::patch('/', [SubscribersController::class, 'update'])->name('update');
         Route::post('/remove', [SubscribersController::class, 'destroy'])->name('remove');
     });
 

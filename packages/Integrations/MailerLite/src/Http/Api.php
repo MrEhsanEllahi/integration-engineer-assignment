@@ -22,14 +22,19 @@ class Api
         return $this->makeCall('subscribers?limit=0', 'GET');
     }
 
-    function addSubscriber($subsciber)
+    function addOrUpdateSubscriber($subsciber)
     {
         return $this->makeCall('subscribers', 'POST', $subsciber);
     }
 
-    function getSubscribers($params)
+    function getSubscribersList($params)
     {
         return $this->makeCall('subscribers', 'GET', null, $params);
+    }
+
+    function getSubscriber($subsciberId)
+    {
+        return $this->makeCall('subscribers/' . $subsciberId, 'GET');
     }
 
     function removeSubscriber($subsciberId)

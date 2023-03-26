@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Country;
 use App\Models\Subscriber;
 use Exception;
 use Illuminate\Http\Request;
@@ -22,7 +23,7 @@ class SubscribersController extends Controller
         $draw = $request->get('draw', 1);
         
         $mailerLiteManager = new MailerLiteManager;
-        $subscribers = $mailerLiteManager->getSubscribers($cursor, $limit);
+        $subscribers = $mailerLiteManager->getSubscribersList($cursor, $limit);
 
         return response()->json([
             'draw' => intval($draw),
@@ -62,6 +63,57 @@ class SubscribersController extends Controller
 
             $notification = ['message' => 'Subscriber added successfully!', 'alert-type' => 'success'];
             return redirect()->route('home')->with($notification);
+        } catch (Exception $e) {
+            $notification = ['message' => $e->getMessage(), 'alert-type' => 'error'];
+            return redirect()->back()->with($notification)->withInput();
+        }
+    }
+
+    public function edit($subscriberId) {
+        if(!Subscriber::where('subscriber_id', $subscriberId)->exists()) {
+            $notification = ['message' => 'Subscriber not found', 'alert-type' => 'error'];
+            return redirect()->back()->with($notification)->withInput();
+        }
+
+        try {
+            $mailerLiteManager = new MailerLiteManager;
+            $subscriber = $mailerLiteManager->getSubscriber($subscriberId);
+            $countries = Country::all(['name']);
+    
+            return view('subscribers.edit', compact('subscriber', 'countries'));
+        } catch (Exception $e) {
+            $notification = ['message' => $e->getMessage(), 'alert-type' => 'error'];
+            return redirect()->back()->with($notification);
+        }
+    }
+
+    public function update(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string',
+            'country' => 'required|string',
+            'subscriber_id' => 'required|exists:subscribers,subscriber_id'
+        ]);
+
+        if ($validator->fails()) {
+            $notification = ['message' => $validator->errors()->first(), 'alert-type' => 'error'];
+            return redirect()->back()->with($notification)->withInput();
+        }
+
+        try {
+            $subscriber = Subscriber::where('subscriber_id', $request->subscriber_id)->first();
+            
+            $mailerLiteManager = new MailerLiteManager;
+            $subscriber = array(
+                    'email' => $subscriber->email,
+                    'fields' => array(
+                        'name' => trim($request->name),
+                        'country' => $request->country,
+                    )
+                );
+            $mailerLiteManager->updateSubscriber($subscriber);
+
+            $notification = ['message' => 'Subscriber updated successfully!', 'alert-type' => 'success'];
+            return redirect()->route('subscribers.index')->with($notification);
         } catch (Exception $e) {
             $notification = ['message' => $e->getMessage(), 'alert-type' => 'error'];
             return redirect()->back()->with($notification)->withInput();
