@@ -11,7 +11,7 @@ class GeneralHelper
     public static function getApiToken()
     {
         $integration = Integration::where('platform', Integration::PLATFORM['MAILER_LITE'])->first();
-        $apiToken = $integration ? $integration->api_token : null;
+        $apiToken = $integration ? decrypt($integration->api_token) : null;
         return $apiToken;
     }
 }

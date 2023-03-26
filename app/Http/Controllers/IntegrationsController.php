@@ -35,7 +35,7 @@ class IntegrationsController extends Controller
             if ($response) {
                 Integration::create([
                     'platform' => Integration::PLATFORM['MAILER_LITE'],
-                    'api_token' => $request->api_token
+                    'api_token' => encrypt($request->api_token)
                 ]);
             }
 

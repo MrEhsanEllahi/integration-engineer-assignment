@@ -12,6 +12,9 @@ use Integrations\MailerLite\Http\Api;
 
 class MailerLiteManager
 {
+    /**
+     * @throws Exception
+     */
     public static function loadApi($apiToken = null)
     {
         try {
@@ -34,6 +37,9 @@ class MailerLiteManager
         }
     }
 
+    /**
+     * @throws Exception
+     */
     public static function addSubscriber($subscriber) 
     {
         try {
@@ -52,6 +58,7 @@ class MailerLiteManager
                 'reference' => RuntimeLog::LOG_REFERENCES['MAILER_LITE']['SYNC'],
                 'trace' => json_encode($response)
             ]);
+            return true;
         } catch (Exception $error) {
             Log::debug("Something went wrong when adding a subscriber", [
                 'reference' => RuntimeLog::LOG_REFERENCES['MAILER_LITE']['SUBSCRIBER'],
@@ -62,6 +69,9 @@ class MailerLiteManager
         }
     }
     
+    /**
+     * @throws Exception
+     */
     public static function updateSubscriber($subscriber) 
     {
         try {
@@ -74,6 +84,7 @@ class MailerLiteManager
                 'reference' => RuntimeLog::LOG_REFERENCES['MAILER_LITE']['SYNC'],
                 'trace' => json_encode($response)
             ]);
+            return true;
         } catch (Exception $error) {
             Log::debug("Something went wrong when updating a subscriber", [
                 'reference' => RuntimeLog::LOG_REFERENCES['MAILER_LITE']['SUBSCRIBER'],
@@ -84,6 +95,9 @@ class MailerLiteManager
         }
     }
 
+    /**
+     * @throws Exception
+     */
     public static function getSubscribersList($cursor = null, $limit = 10) 
     {
         try {
@@ -116,6 +130,9 @@ class MailerLiteManager
         }
     }
 
+    /**
+     * @throws Exception
+     */
     public static function getSubscriber($subscriberId) 
     {
         try {      
@@ -143,6 +160,9 @@ class MailerLiteManager
         }
     }
 
+    /**
+     * @throws Exception
+     */
     public static function removeSubscriber($subscriberId)
     {
         try {
@@ -159,6 +179,7 @@ class MailerLiteManager
                 'payload' => json_encode($subscriberId),
                 'trace' => json_encode($response)
             ]);
+            return true;
         } catch (Exception $error) {
             Log::debug("Something went wrong when removing subscriber", [
                 'reference' => RuntimeLog::LOG_REFERENCES['MAILER_LITE']['SUBSCRIBER'],
@@ -169,6 +190,9 @@ class MailerLiteManager
         }
     }
 
+    /**
+     * @throws Exception
+     */
     public static function isValidApiToken($apiToken)
     {
         try {

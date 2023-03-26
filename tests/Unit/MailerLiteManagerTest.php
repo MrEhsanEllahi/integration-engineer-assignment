@@ -25,10 +25,48 @@ class MailerLiteManagerTest extends TestCase
         $mailerLiteManager->isValidApiToken($invalidApiToken);
     }
 
-    public function testSubscribersList()
+    public function testCreateSubscriber()
     {
         $mailerLiteManager = new MailerLiteManager;
-        $this->assertIsArray($mailerLiteManager->getSubscribersList());
+
+        // Create dummy subscriber data
+        $subscriberData = [
+            'email' => 'test@example.com',
+            'fields' => [
+                'name' => 'Test User',
+                'country' => 'United States',
+            ],
+        ];
+
+        $this->assertTrue($mailerLiteManager->addSubscriber($subscriberData));
+    }
+
+    public function testUpdateSubscriber()
+    {
+        $mailerLiteManager = new MailerLiteManager;
+        $subscribersList = $mailerLiteManager->getSubscribersList();
+
+        // Check if the list is not empty
+        $this->assertNotEmpty($subscribersList, "Subscribers list is empty");
+
+        if (!empty($subscribersList)) {
+            // Get the first subscriber
+            $subscriber = $subscribersList['data'][0];
+
+            // Update the name of the subscriber
+            $subscriber->name = 'Updated Test Name';
+
+            // Prepare the update data
+            $updatedSubscriber = [
+                'email' => $subscriber->email,
+                'fields' => [
+                    'name' => $subscriber->name,
+                    'country' => $subscriber->country,
+                ],
+            ];
+
+            $this->assertTrue($mailerLiteManager->updateSubscriber($updatedSubscriber));
+        }
     }
 
     public function testGetSubscriber()
@@ -48,68 +86,10 @@ class MailerLiteManagerTest extends TestCase
         }
     }
 
-    public function testCreateSubscriber()
+    public function testSubscribersList()
     {
         $mailerLiteManager = new MailerLiteManager;
-
-        // Create dummy subscriber data
-        $subscriberData = [
-            'email' => 'test@example.com',
-            'fields' => [
-                'name' => 'Test User',
-                'country' => 'United States',
-            ],
-        ];
-
-        $noExceptionThrown = false;
-
-        try {
-            $mailerLiteManager->addSubscriber($subscriberData);
-            $noExceptionThrown = true;
-        } catch (Exception $e) {
-            // If an exception is thrown, the test will fail
-        }
-
-        // Assert that no exception was thrown
-        $this->assertTrue($noExceptionThrown, 'An exception was thrown during the addSubscriber() call.');
-    }
-
-    public function testUpdateSubscriber()
-    {
-        $mailerLiteManager = new MailerLiteManager;
-        $subscribersList = $mailerLiteManager->getSubscribersList();
-
-        // Check if the list is not empty
-        $this->assertNotEmpty($subscribersList, "Subscribers list is empty");
-
-        if (!empty($subscribersList)) {
-            $noExceptionThrown = false;
-
-            try {
-                // Get the first subscriber
-                $subscriber = $subscribersList['data'][0];
-
-                // Update the name of the subscriber
-                $subscriber->name = 'Updated Test Name';
-
-                // Prepare the update data
-                $updatedSubscriber = [
-                    'email' => $subscriber->email,
-                    'fields' => [
-                        'name' => $subscriber->name,
-                        'country' => $subscriber->country,
-                    ],
-                ];
-
-                $mailerLiteManager->updateSubscriber($updatedSubscriber);
-                $noExceptionThrown = true;
-            } catch (Exception $e) {
-                // If an exception is thrown, the test will fail
-            }
-            
-            // Assert that no exception was thrown
-            $this->assertTrue($noExceptionThrown, 'An exception was thrown during the updateSubscriber() call.');
-        }
+        $this->assertIsArray($mailerLiteManager->getSubscribersList());
     }
 
     public function testRemoveSubscriber()
@@ -121,20 +101,10 @@ class MailerLiteManagerTest extends TestCase
         $this->assertNotEmpty($subscribersList, "Subscribers list is empty");
 
         if (!empty($subscribersList)) {
-            $noExceptionThrown = false;
+            // Get the ID of the first subscriber
+            $subscriberId = $subscribersList['data'][0]->id;
 
-            try {
-                // Get the ID of the first subscriber
-                $subscriberId = $subscribersList['data'][0]->id;
-
-                $mailerLiteManager->removeSubscriber($subscriberId);
-                $noExceptionThrown = true;
-            } catch (Exception $e) {
-                // If an exception is thrown, the test will fail
-            }
-            
-            // Assert that no exception was thrown
-            $this->assertTrue($noExceptionThrown, 'An exception was thrown during the updateSubscriber() call.');
+            $this->assertTrue($mailerLiteManager->removeSubscriber($subscriberId));
         }
     }
 }
