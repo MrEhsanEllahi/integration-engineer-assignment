@@ -2,6 +2,68 @@
 
 This project is a Laravel application that integrates with the MailerLite API to manage subscribers. The application is built using Laravel ^8.75 and PHP ^7.4.
 
+# Getting Started
+
+Follow these steps to set up and run the Laravel MailerLite Integration project in your local environment.
+
+## Step 1: Clone the repository
+
+Clone the project repository from the provided Git URL.
+
+```bash
+git clone https://github.com/MrEhsanEllahi/integration-engineer-assignment.git
+```
+## Step 2: Change to the project directory
+
+Navigate to the project directory.
+
+```bash
+cd integration-engineer-assignment
+```
+
+## Step 3: Install dependencies
+
+Install the required dependencies using Composer.
+
+```bash
+composer install
+```
+
+## Step 4: Create the .env file
+
+Create a new .env file by copying the provided .env.example.
+
+```bash
+cp .env.example .env
+```
+
+## Step 5: Generate an application key
+
+Generate an application key for your Laravel project.
+
+```bash
+php artisan key:generate
+```
+
+## Step 6: Import SQL File
+
+There is no need to run `php artisan migration` command. Just import the sql file available under `Database` directory.
+
+## Step 7: Configure the .env file
+
+Edit the .env file to set up the required configuration values, such as the database connection and MailerLite API token and endpoint.
+
+```bash
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=your_database_name
+DB_USERNAME=your_database_username
+DB_PASSWORD=your_database_password
+
+MAILERLITE_API_TOKEN=your_mailerlite_api_token
+MAILERLITE_API_ENDPOINT=your_mailerlite_api_endpoint
+```
 ## Technical Information
 
 The project uses the following libraries, which are included via CDN:
@@ -21,9 +83,9 @@ The MailerLite integration is done using a custom-made package under the `integr
 
 An SQL file is available under the `database` directory, so there's no need to run migrations.
 
-### Environment
+### MailerLite Keys
 
-Set the MailerLite `MAILERLITE_API_TOKEN` and `MAILERLITE_API_ENDPOINT` in the `.env` file, which can be created using `.env.example`.
+To ensure the working of app 100%, make sure that the key `MAILERLITE_API_ENDPOINT` is set in `.env` file. And tests will work only if `MAILERLITE_API_TOKEN` is also set under `.env` file.
 
 ## Features
 
@@ -44,3 +106,21 @@ Set the MailerLite `MAILERLITE_API_TOKEN` and `MAILERLITE_API_ENDPOINT` in the `
 3. Use navigation buttons to paginate through data.
 4. Filter subscribers by email using DataTables search.
 5. Limit of the subscibers can be changed using the dropdown available.
+
+### Edit Subscriber
+
+1. Click on the email from the table or the edit icon under the actions table.
+2. Update the name or country of the user in the opened form.
+3. Save the changes.
+
+### Delete Subscriber
+
+1. Click on the trash icon under the actions table.
+2. Remove the subscriber using an AJAX request. No redirect will happen.
+3. Upon successful removal, the row will be removed from the table.
+
+### Error Handling
+
+1. For any error, exception, or success, a toast message will be shown with an informative message.
+2. Each action will log the message properly into the database for effective troubleshooting.
+3. Access the logs by visiting the `Runtime Logs` view using the navigation.
