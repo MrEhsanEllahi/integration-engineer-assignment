@@ -62,7 +62,7 @@ class Api
 
         try {
             $client = new Client([
-                'verify' => config('app.env') === 'local' ? false : true
+                'verify' => false
             ]);
 
             $options = [
