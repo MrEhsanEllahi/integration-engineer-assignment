@@ -18,7 +18,8 @@ class IntegrationsController extends Controller
         return view('integrations', compact('apiToken'));
     }
 
-    public function validateIntegration(Request $request) {
+    public function validateIntegration(Request $request) 
+    {
         $validator = Validator::make($request->all(), [
             'api_token' => 'required|string'
         ]);
@@ -31,7 +32,7 @@ class IntegrationsController extends Controller
         try {
             $mailerLiteManager = new MailerLiteManager;
             $response = $mailerLiteManager->isValidApiToken($request->api_token);
-            if($response) {
+            if ($response) {
                 Integration::create([
                     'platform' => Integration::PLATFORM['MAILER_LITE'],
                     'api_token' => $request->api_token

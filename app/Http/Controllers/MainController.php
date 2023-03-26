@@ -7,6 +7,9 @@ use App\Models\Country;
 
 class MainController extends Controller
 {
+    /**
+     * Show add-subscriber form
+    */
     public function index()
     {
         $countries = Country::all(['name']);

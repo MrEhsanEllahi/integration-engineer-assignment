@@ -17,7 +17,8 @@ class SubscribersController extends Controller
         return view('subscribers.list');
     }
 
-    public function list(Request $request) {
+    public function list(Request $request) 
+    {
         $cursor = $request->get('cursor', null);
         $limit = $request->get('limit', 10);
         $draw = $request->get('draw', 1);
@@ -33,7 +34,8 @@ class SubscribersController extends Controller
         ]);
     }
 
-    public function store(Request $request) {
+    public function store(Request $request) 
+    {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string',
             'email' => 'required|email',
@@ -46,7 +48,7 @@ class SubscribersController extends Controller
         }
 
         try {
-            if(Subscriber::where('email', $request->email)->exists()) {
+            if (Subscriber::where('email', $request->email)->exists()) {
                 $notification = ['message' => 'User already exist as a subscriber', 'alert-type' => 'error'];
                 return redirect()->back()->with($notification)->withInput();
             }
@@ -69,8 +71,9 @@ class SubscribersController extends Controller
         }
     }
 
-    public function edit($subscriberId) {
-        if(!Subscriber::where('subscriber_id', $subscriberId)->exists()) {
+    public function edit($subscriberId) 
+    {
+        if (!Subscriber::where('subscriber_id', $subscriberId)->exists()) {
             $notification = ['message' => 'Subscriber not found', 'alert-type' => 'error'];
             return redirect()->back()->with($notification)->withInput();
         }
@@ -87,7 +90,8 @@ class SubscribersController extends Controller
         }
     }
 
-    public function update(Request $request) {
+    public function update(Request $request) 
+    {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string',
             'country' => 'required|string',
@@ -120,7 +124,8 @@ class SubscribersController extends Controller
         }
     }
 
-    public function destroy(Request $request) {
+    public function destroy(Request $request) 
+    {
         $validator = Validator::make($request->all(), [
             'subscriber_id' => 'required|exists:subscribers,subscriber_id'
         ]);

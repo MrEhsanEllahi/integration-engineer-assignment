@@ -15,13 +15,14 @@ class MailerLiteManager
     public static function loadApi($apiToken = null)
     {
         try {
-            if(!$apiToken) {
+            if (!$apiToken) {
                 $apiToken = GeneralHelper::getApiToken();
             
-                if(!$apiToken) {
+                if (!$apiToken) {
                     throw new Exception('Store not connected');
                 }
             }
+            
             $api = new Api($apiToken);
             return $api;
         } catch (Exception $error) {
@@ -33,21 +34,24 @@ class MailerLiteManager
         }
     }
 
-    public static function addSubscriber($subscriber) {
+    public static function addSubscriber($subscriber) 
+    {
         try {
             $response = self::loadApi()->addOrUpdateSubscriber($subscriber);
-            if($response['success'] == false) {
+            
+            if ($response['success'] == false) {
                 throw new Exception($response['message']);
             }
+            
             Subscriber::create([
                 'subscriber_id' => $response['data']['data']['id'],
                 'email' => $subscriber['email'],
             ]);
+            
             Log::debug("Subscriber added successfuly", [
                 'reference' => RuntimeLog::LOG_REFERENCES['MAILER_LITE']['SYNC'],
                 'trace' => json_encode($response)
             ]);
-            return true;
         } catch (Exception $error) {
             Log::debug("Something went wrong when adding a subscriber", [
                 'reference' => RuntimeLog::LOG_REFERENCES['MAILER_LITE']['SUBSCRIBER'],
@@ -58,10 +62,11 @@ class MailerLiteManager
         }
     }
     
-    public static function updateSubscriber($subscriber) {
+    public static function updateSubscriber($subscriber) 
+    {
         try {
             $response = self::loadApi()->addOrUpdateSubscriber($subscriber);
-            if($response['success'] == false) {
+            if ($response['success'] == false) {
                 throw new Exception($response['message']);
             }
             
@@ -69,7 +74,6 @@ class MailerLiteManager
                 'reference' => RuntimeLog::LOG_REFERENCES['MAILER_LITE']['SYNC'],
                 'trace' => json_encode($response)
             ]);
-            return true;
         } catch (Exception $error) {
             Log::debug("Something went wrong when updating a subscriber", [
                 'reference' => RuntimeLog::LOG_REFERENCES['MAILER_LITE']['SUBSCRIBER'],
@@ -89,14 +93,17 @@ class MailerLiteManager
             ];
             
             $response = self::loadApi()->getSubscribersList($params);
-            if($response['success'] == false) {
+            
+            if ($response['success'] == false) {
                 throw new Exception($response['message']);
             }
+            
             Log::debug("Subscribers list fetched successfully", [
                 'reference' => RuntimeLog::LOG_REFERENCES['MAILER_LITE']['SUBSCRIBER'],
                 'payload' => json_encode($params),
                 'trace' => json_encode($response)
             ]);
+            
             $formattedSubscribers = SubscribersFormatter::formatSubscribersList($response['data']);
             return $formattedSubscribers;
         } catch (Exception $error) {
@@ -113,14 +120,17 @@ class MailerLiteManager
     {
         try {      
             $response = self::loadApi()->getSubscriber($subscriberId);
-            if($response['success'] == false) {
+            
+            if ($response['success'] == false) {
                 throw new Exception($response['message']);
             }
+            
             Log::debug("Subscriber fetched successfully", [
                 'reference' => RuntimeLog::LOG_REFERENCES['MAILER_LITE']['SUBSCRIBER'],
                 'payload' => json_encode($subscriberId),
                 'trace' => json_encode($response)
             ]);
+            
             $formattedSubscriber = SubscribersFormatter::formatSubscriber($response['data']);
             return $formattedSubscriber;
         } catch (Exception $error) {
@@ -137,10 +147,13 @@ class MailerLiteManager
     {
         try {
             $response = self::loadApi()->removeSubscriber($subscriberId);
-            if($response['success'] == false) {
+            
+            if ($response['success'] == false) {
                 throw new Exception($response['message']);
             }
+            
             Subscriber::where('subscriber_id', $subscriberId)->delete();
+            
             Log::debug("Subscriber removed successfully", [
                 'reference' => RuntimeLog::LOG_REFERENCES['MAILER_LITE']['SUBSCRIBER'],
                 'payload' => json_encode($subscriberId),
@@ -160,9 +173,11 @@ class MailerLiteManager
     {
         try {
             $response = self::loadApi($apiToken)->validateApiToken();
-            if($response['success'] == false) {
+            
+            if ($response['success'] == false) {
                 throw new Exception($response['message']);
             }
+            
             Log::debug("MailerLite API-TOKEN is validated successfully", [
                 'reference' => RuntimeLog::LOG_REFERENCES['MAILER_LITE']['SYNC'],
                 'trace' => json_encode($response)

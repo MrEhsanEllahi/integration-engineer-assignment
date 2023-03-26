@@ -47,7 +47,7 @@ class Api
         $headers = [];
         $requestData = [];
         
-        if(!empty($params)) {
+        if (!empty($params)) {
             $endpoint .= '?' . http_build_query($params);
         }
         

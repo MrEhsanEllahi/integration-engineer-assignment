@@ -7,6 +7,9 @@ use App\Models\RuntimeLog;
 
 class RuntimeLogsController extends Controller
 {
+    /**
+     * List Runtime Logs
+     */
     public function index()
     {
         $runtimeLogs = RuntimeLog::latest()->paginate(10);
