@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Integration;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Validator;
 use Integrations\MailerLite\MailerLiteManager;
 
@@ -30,12 +31,14 @@ class IntegrationsController extends Controller
         }
 
         try {
+            $apiToken = $request->api_token;
             $mailerLiteManager = new MailerLiteManager;
-            $response = $mailerLiteManager->isValidApiToken($request->api_token);
+            $response = $mailerLiteManager->isValidApiToken($apiToken);
             if ($response) {
+                $encryptedApiToken = Crypt::encryptString($apiToken);
                 Integration::create([
                     'platform' => Integration::PLATFORM['MAILER_LITE'],
-                    'api_token' => encrypt($request->api_token)
+                    'api_token' => $encryptedApiToken
                 ]);
             }
 

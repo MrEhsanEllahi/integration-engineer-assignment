@@ -15,7 +15,7 @@ class MailerLiteManager
     /**
      * @throws Exception
      */
-    public static function loadApi($apiToken = null)
+    public static function loadApi($apiToken = null) : Api
     {
         try {
             if (!$apiToken) {
@@ -42,10 +42,12 @@ class MailerLiteManager
      */
     public static function addSubscriber($subscriber) 
     {
+        $response = [];
+        
         try {
             $response = self::loadApi()->addOrUpdateSubscriber($subscriber);
             
-            if ($response['success'] == false) {
+            if (!$response['success']) {
                 throw new Exception($response['message']);
             }
             
@@ -74,9 +76,11 @@ class MailerLiteManager
      */
     public static function updateSubscriber($subscriber) 
     {
+        $response = [];
+        
         try {
             $response = self::loadApi()->addOrUpdateSubscriber($subscriber);
-            if ($response['success'] == false) {
+            if (!$response['success']) {
                 throw new Exception($response['message']);
             }
             
@@ -100,6 +104,8 @@ class MailerLiteManager
      */
     public static function getSubscribersList($cursor = null, $limit = 10) 
     {
+        $response = [];
+        
         try {
             $params = [
                 'cursor' => $cursor,
@@ -108,7 +114,7 @@ class MailerLiteManager
             
             $response = self::loadApi()->getSubscribersList($params);
             
-            if ($response['success'] == false) {
+            if (!$response['success']) {
                 throw new Exception($response['message']);
             }
             
@@ -135,10 +141,12 @@ class MailerLiteManager
      */
     public static function getSubscriber($subscriberId) 
     {
+        $response = [];
+        
         try {      
             $response = self::loadApi()->getSubscriber($subscriberId);
             
-            if ($response['success'] == false) {
+            if (!$response['success']) {
                 throw new Exception($response['message']);
             }
             
@@ -165,10 +173,12 @@ class MailerLiteManager
      */
     public static function removeSubscriber($subscriberId)
     {
+        $response = [];
+        
         try {
             $response = self::loadApi()->removeSubscriber($subscriberId);
             
-            if ($response['success'] == false) {
+            if (!$response['success']) {
                 throw new Exception($response['message']);
             }
             
@@ -195,10 +205,12 @@ class MailerLiteManager
      */
     public static function isValidApiToken($apiToken)
     {
+        $response = [];
+
         try {
             $response = self::loadApi($apiToken)->validateApiToken();
             
-            if ($response['success'] == false) {
+            if (!$response['success']) {
                 throw new Exception($response['message']);
             }
             

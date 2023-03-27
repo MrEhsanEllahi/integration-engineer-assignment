@@ -65,6 +65,9 @@
                 $('#prevPage').prop('disabled', !prevCursor);
                 $('#nextPage').prop('disabled', !currentCursor);
             },
+            error: function (errorThrown) {
+                toastr.error(errorThrown.responseJSON.message);
+            },
             complete: function () {
                 // Hide the loader
                 $('#loader').hide();
@@ -114,12 +117,10 @@
                     // Remove the row from the DataTable
                     row.remove().draw();
                     toastr.success('Subscriber removed successfully');
-                } else {
-                    toastr.error('Failed to remove subscriber:' + response.message);
                 }
             },
             error: function (errorThrown) {
-                toastr.error('Failed to remove subscriber:' + errorThrown);
+                toastr.error(errorThrown.responseJSON.message);
             },
             complete: function () {
                 // Hide the loader

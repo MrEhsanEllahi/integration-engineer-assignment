@@ -19,19 +19,25 @@ class SubscribersController extends Controller
 
     public function list(Request $request) 
     {
-        $cursor = $request->get('cursor', null);
-        $limit = $request->get('limit', 10);
-        $draw = $request->get('draw', 1);
-        
-        $mailerLiteManager = new MailerLiteManager;
-        $subscribers = $mailerLiteManager->getSubscribersList($cursor, $limit);
-
-        return response()->json([
-            'draw' => intval($draw),
-            'data' => $subscribers['data'],
-            'nextCursor' => $subscribers['next_cursor'],
-            'prevCursor' => $subscribers['prev_cursor'],
-        ]);
+        try {
+            $cursor = $request->get('cursor', null);
+            $limit = $request->get('limit', 10);
+            $draw = $request->get('draw', 1);
+            
+            $mailerLiteManager = new MailerLiteManager;
+            $subscribers = $mailerLiteManager->getSubscribersList($cursor, $limit);
+    
+            return response()->json([
+                'draw' => intval($draw),
+                'data' => $subscribers['data'],
+                'nextCursor' => $subscribers['next_cursor'],
+                'prevCursor' => $subscribers['prev_cursor'],
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 400);
+        }
     }
 
     public function store(Request $request) 
@@ -134,7 +140,7 @@ class SubscribersController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => $validator->errors()->first()
-            ]);
+            ], 400);
         }
 
         try {
@@ -146,8 +152,10 @@ class SubscribersController extends Controller
                 'message' => 'Subscriber removed successfully'
             ]);
         } catch (Exception $e) {
-            $notification = ['message' => $e->getMessage(), 'alert-type' => 'error'];
-            return redirect()->back()->with($notification)->withInput();
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 400);
         }
     }
 }
